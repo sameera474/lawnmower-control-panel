@@ -1,26 +1,16 @@
 const express = require("express");
-const LawnData = require("../models/LawnmowerData");
+const LawnData = require("../models/LawnData");
 
-const router = express.Router();
+const router = express.Router(); // Initialize the router
 
-// Fetch all data
-router.get("/", async (req, res) => {
+// Fetch the latest data
+router.get("/latest", async (req, res) => {
   try {
-    const data = await LawnData.find({});
-    res.status(200).json(data);
+    const latestData = await LawnData.find().sort({ timestamp: -1 }).limit(10); // Fetch the 10 most recent entries
+    res.status(200).json(latestData);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// Clear all data
-router.delete("/", async (req, res) => {
-  try {
-    await LawnData.deleteMany({});
-    res.status(200).json({ message: "All data cleared." });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-module.exports = router;
+module.exports = router; // Export the router to be used in server.js
