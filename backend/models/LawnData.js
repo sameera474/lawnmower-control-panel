@@ -1,17 +1,19 @@
 const mongoose = require("mongoose");
 
-const LawnDataSchema = new mongoose.Schema({
-  timestamp: { type: Date, default: Date.now },
-  batteryLevel: Number,
-  powerUsage: Number,
-  bladeRPM: Number,
-  speed: Number,
-  grassHeight: Number,
-  areaCovered: Number,
-  gpsCoordinates: {
-    type: { type: String, default: "Polygon" },
-    coordinates: [[Number]],
+const lawnDataSchema = new mongoose.Schema({
+  Timestamp: { type: Date, default: Date.now },
+  Metrics: {
+    BatteryLevel: { type: Number, required: true },
+    CurrentPowerUsage: { type: Number, required: true },
+    CuttingBladeRPM: { type: Number, required: true },
+    Speed: { type: Number, required: true },
+    GrassHeight: { type: Number, required: true },
+    AreaCovered: { type: Number, required: true },
+    ProximityFrontSensor: { type: Number, required: true },
+    ProximityRearSensor: { type: Number, required: true },
+    ObstacleDetected: { type: Boolean, required: true },
+    ErrorState: { type: String, default: null },
   },
 });
 
-module.exports = mongoose.model("LawnData", LawnDataSchema);
+module.exports = mongoose.model("LawnData", lawnDataSchema);

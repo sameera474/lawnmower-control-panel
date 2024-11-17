@@ -2,9 +2,9 @@ import React from "react";
 
 const UserProfile = () => {
   return (
-    <div>
+    <div style={{ padding: "20px" }}>
       <h1>User Profile</h1>
-      <p>Details about the user will go here, with options to edit.</p>
+      <p>This page will include sign-up and login functionality.</p>
     </div>
   );
 };

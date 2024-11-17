@@ -3,39 +3,52 @@ const dotenv = require("dotenv");
 const LawnData = require("./models/LawnData");
 
 dotenv.config();
+
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
 let batteryLevel = 100; // Start with a full battery
+let areaCovered = 0; // Start with 0 area covered
 
 const generateFakeData = async () => {
   try {
-    // Decrement the battery level
-    batteryLevel = Math.max(0, batteryLevel - Math.random() * 2); // Reduce battery by 0-2% per cycle
+    // Generate proximity values and detect obstacles
+    const proximityFront = Math.random() * 2;
+    const proximityRear = Math.random() * 2;
+    const obstacleDetected = proximityFront < 0.5 || proximityRear < 0.5;
+    const errorState = obstacleDetected ? "E01: Obstacle Detected" : null;
 
-    // Generate other dynamic variables
+    // Decrease battery and calculate area covered
+    batteryLevel = Math.max(0, batteryLevel - Math.random() * 0.5); // Decrease 0-0.5% battery
+    if (!obstacleDetected) areaCovered += Math.random() * 0.5;
+
+    // Create fake data
     const fakeData = {
-      batteryLevel,
-      powerUsage: Math.random() * 100, // Random power usage (0-100W)
-      bladeRPM: Math.random() * 3000, // Random RPM (0-3000)
-      speed: Math.random() * 2, // Random speed (0-2 m/s)
-      grassHeight: Math.random() * 10, // Grass height variation (0-10 cm)
-      areaCovered: Math.random() * 50, // Random area covered (0-50 sq.m.)
-      gpsCoordinates: {
-        coordinates: [[Math.random() * 100, Math.random() * 100]], // Random GPS location
+      Timestamp: new Date(),
+      Metrics: {
+        BatteryLevel: parseFloat(batteryLevel.toFixed(1)),
+        CurrentPowerUsage: Math.random() * 10 + 50, // Random power usage (50-60W)
+        CuttingBladeRPM: Math.floor(Math.random() * 500 + 3000), // RPM (3000-3500)
+        Speed: parseFloat((Math.random() * 2).toFixed(2)), // Speed (0-2 m/s)
+        GrassHeight: parseFloat((Math.random() * 2 + 5).toFixed(1)), // Grass height (5-7 cm)
+        AreaCovered: parseFloat(areaCovered.toFixed(1)), // Area covered
+        ProximityFrontSensor: parseFloat(proximityFront.toFixed(2)),
+        ProximityRearSensor: parseFloat(proximityRear.toFixed(2)),
+        ObstacleDetected: obstacleDetected,
+        ErrorState: errorState,
       },
     };
 
-    // Add data to the database
+    // Save to database
     await LawnData.create(fakeData);
 
     console.log("Generated Fake Data:", fakeData);
 
-    // Reset the battery level if it reaches 0
+    // Reset battery when drained
     if (batteryLevel <= 0) {
-      console.log("Battery drained! Resetting to 100%.");
+      console.log("Battery drained. Resetting to 100%.");
       batteryLevel = 100;
     }
   } catch (error) {
@@ -43,5 +56,5 @@ const generateFakeData = async () => {
   }
 };
 
-// Run the generator every 10 seconds
+// Generate new data every 10 seconds
 setInterval(generateFakeData, 10000);

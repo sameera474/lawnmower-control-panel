@@ -2,9 +2,9 @@ import React from "react";
 
 const About = () => {
   return (
-    <div>
+    <div style={{ padding: "20px" }}>
       <h1>About Us</h1>
-      <p>Details about the company will go here.</p>
+      <p>This is where you can add details about your company.</p>
     </div>
   );
 };

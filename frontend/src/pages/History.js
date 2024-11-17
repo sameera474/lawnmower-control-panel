@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -6,41 +6,67 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   Button,
 } from "@mui/material";
+import axios from "axios";
+import API_BASE_URL from "../api";
 
 const History = () => {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`${API_BASE_URL}/latest`)
+      .then((response) => setData(response.data))
+      .catch((err) => console.error("Error fetching data:", err));
+  }, []);
+
+  const clearRow = (index) => {
+    setData(data.filter((_, i) => i !== index));
+  };
+
+  const clearAll = () => {
+    setData([]);
+  };
+
   return (
-    <div>
+    <div style={{ padding: "20px" }}>
       <h1>History</h1>
-      <TableContainer component={Paper}>
+      <Button variant="contained" color="secondary" onClick={clearAll}>
+        Clear All
+      </Button>
+      <TableContainer>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Timestamp</TableCell>
+              <TableCell>Time</TableCell>
               <TableCell>Battery Level</TableCell>
-              <TableCell>Power Usage</TableCell>
+              <TableCell>Speed</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            <TableRow>
-              <TableCell>2024-11-16 10:00</TableCell>
-              <TableCell>80%</TableCell>
-              <TableCell>55W</TableCell>
-              <TableCell>
-                <Button variant="outlined" color="secondary">
-                  Clear
-                </Button>
-              </TableCell>
-            </TableRow>
+            {data.map((item, index) => (
+              <TableRow key={index}>
+                <TableCell>
+                  {new Date(item.timestamp).toLocaleTimeString()}
+                </TableCell>
+                <TableCell>{item.batteryLevel.toFixed(1)}%</TableCell>
+                <TableCell>{item.speed.toFixed(2)} m/s</TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() => clearRow(index)}
+                  >
+                    Clear
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <Button variant="contained" color="primary">
-        Clear All
-      </Button>
     </div>
   );
 };

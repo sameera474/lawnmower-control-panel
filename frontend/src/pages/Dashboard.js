@@ -1,75 +1,92 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import API_BASE_URL from "../api";
 import {
   Card,
   CardContent,
   Typography,
-  Grid,
   CircularProgress,
   Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from "@mui/material";
-import { Line } from "react-chartjs-2";
+import Grid from "@mui/material/Grid";
 import {
   Chart as ChartJS,
   LineElement,
-  CategoryScale,
-  LinearScale,
   PointElement,
+  LinearScale,
+  CategoryScale,
+  Title,
+  Tooltip,
+  Legend,
 } from "chart.js";
+import { Line } from "react-chartjs-2";
 
 // Register Chart.js components
-ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
+ChartJS.register(
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const Dashboard = () => {
-  const [data, setData] = useState([]);
-  const [battery, setBattery] = useState(100);
-  const [speed, setSpeed] = useState(0);
-  const [chartData, setChartData] = useState([]);
+  const [lawnData, setLawnData] = useState([]);
+  const [latestMetrics, setLatestMetrics] = useState({});
+  const [chartInstance, setChartInstance] = useState(null);
 
-  const fetchData = () => {
-    axios
-      .get(`${API_BASE_URL}/latest`)
-      .then((response) => {
-        const lawnData = response.data;
-
-        // Update states
-        setData(lawnData);
-        setBattery(lawnData[0]?.batteryLevel || 0);
-        setSpeed(lawnData[0]?.speed || 0);
-
-        // Prepare data for charts
-        const chartValues = lawnData.map((item) => ({
-          timestamp: new Date(item.timestamp).toLocaleTimeString(),
-          powerUsage: item.powerUsage,
-          bladeRPM: item.bladeRPM,
-        }));
-
-        setChartData(chartValues);
-      })
-      .catch((err) => console.error("Error fetching data:", err));
+  // Fetch data from backend
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/realtime-data"
+      );
+      const data = response.data.RealTimeLawnMowerData;
+      setLawnData(data);
+      setLatestMetrics(data[data.length - 1]?.Metrics || {});
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
   };
 
   useEffect(() => {
-    fetchData(); // Initial fetch
-    const interval = setInterval(fetchData, 10000); // Fetch every 10 seconds
+    fetchData();
+    const interval = setInterval(fetchData, 10000); // Update every 10 seconds
     return () => clearInterval(interval);
   }, []);
 
-  const lineChartData = {
-    labels: chartData.map((item) => item.timestamp),
+  const chartData = {
+    labels: lawnData.map((item) =>
+      new Date(item.Timestamp).toLocaleTimeString()
+    ),
     datasets: [
       {
-        label: "Power Usage (W)",
-        data: chartData.map((item) => item.powerUsage),
-        fill: false,
+        label: "Battery Level (%)",
+        data: lawnData.map((item) => item.Metrics.BatteryLevel),
         borderColor: "rgba(75,192,192,1)",
+        backgroundColor: "rgba(75,192,192,0.2)",
+        fill: true,
       },
       {
-        label: "Blade RPM",
-        data: chartData.map((item) => item.bladeRPM),
-        fill: false,
+        label: "Cutting Blade RPM",
+        data: lawnData.map((item) => item.Metrics.CuttingBladeRPM),
         borderColor: "rgba(255,99,132,1)",
+        backgroundColor: "rgba(255,99,132,0.2)",
+        fill: true,
+      },
+      {
+        label: "Current Power Usage (W)",
+        data: lawnData.map((item) => item.Metrics.CurrentPowerUsage),
+        borderColor: "rgba(54,162,235,1)",
+        backgroundColor: "rgba(54,162,235,0.2)",
+        fill: true,
       },
     ],
   };
@@ -80,45 +97,109 @@ const Dashboard = () => {
         LawnMower Dashboard
       </Typography>
       <Grid container spacing={3}>
-        {/* Battery Indicator */}
+        {/* Battery Level */}
         <Grid item xs={12} sm={6} md={4}>
-          <Card sx={{ textAlign: "center" }}>
+          <Card>
             <CardContent>
               <Typography variant="h6">Battery Level</Typography>
               <CircularProgress
                 variant="determinate"
-                value={battery}
+                value={latestMetrics.BatteryLevel || 0}
                 size={100}
                 thickness={5}
                 sx={{
                   color:
-                    battery > 50 ? "green" : battery > 20 ? "orange" : "red",
-                  margin: "20px auto",
+                    latestMetrics.BatteryLevel > 50
+                      ? "green"
+                      : latestMetrics.BatteryLevel > 20
+                      ? "orange"
+                      : "red",
                 }}
               />
-              <Typography variant="h6">{battery.toFixed(1)}%</Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* Speedometer */}
-        <Grid item xs={12} sm={6} md={4}>
-          <Card sx={{ textAlign: "center" }}>
-            <CardContent>
-              <Typography variant="h6">Speed</Typography>
-              <Typography variant="h3" color="primary">
-                {speed.toFixed(2)} m/s
+              <Typography variant="h6">
+                {latestMetrics.BatteryLevel?.toFixed(1) || 0}%
               </Typography>
             </CardContent>
           </Card>
         </Grid>
 
-        {/* Line Chart */}
+        {/* Speed */}
+        <Grid item xs={12} sm={6} md={4}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6">Speed</Typography>
+              <Typography variant="h3" color="primary">
+                {latestMetrics.Speed?.toFixed(2) || 0} m/s
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Area Covered */}
+        <Grid item xs={12} sm={6} md={4}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6">Area Covered</Typography>
+              <Typography variant="h3" color="primary">
+                {latestMetrics.AreaCovered?.toFixed(2) || 0} m²
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Chart */}
         <Grid item xs={12}>
           <Card>
             <CardContent>
               <Typography variant="h6">Performance Metrics</Typography>
-              <Line data={lineChartData} />
+              <Line data={chartData} />
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Data Table */}
+        <Grid item xs={12}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6">Recent Data</Typography>
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Timestamp</TableCell>
+                      <TableCell>Battery Level</TableCell>
+                      <TableCell>Speed</TableCell>
+                      <TableCell>Current Power Usage</TableCell>
+                      <TableCell>Area Covered</TableCell>
+                      <TableCell>Obstacle Detected</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {lawnData.map((item, index) => (
+                      <TableRow key={index}>
+                        <TableCell>
+                          {new Date(item.Timestamp).toLocaleTimeString()}
+                        </TableCell>
+                        <TableCell>
+                          {item.Metrics.BatteryLevel.toFixed(1)}%
+                        </TableCell>
+                        <TableCell>
+                          {item.Metrics.Speed.toFixed(2)} m/s
+                        </TableCell>
+                        <TableCell>
+                          {item.Metrics.CurrentPowerUsage.toFixed(1)} W
+                        </TableCell>
+                        <TableCell>
+                          {item.Metrics.AreaCovered.toFixed(2)} m²
+                        </TableCell>
+                        <TableCell>
+                          {item.Metrics.ObstacleDetected ? "Yes" : "No"}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </CardContent>
           </Card>
         </Grid>
