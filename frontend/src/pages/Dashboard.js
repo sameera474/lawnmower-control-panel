@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import {
   Card,
@@ -12,8 +12,9 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Button,
+  Grid,
 } from "@mui/material";
-import Grid from "@mui/material/Grid";
 import {
   Chart as ChartJS,
   LineElement,
@@ -40,19 +41,30 @@ ChartJS.register(
 const Dashboard = () => {
   const [lawnData, setLawnData] = useState([]);
   const [latestMetrics, setLatestMetrics] = useState({});
-  const [chartInstance, setChartInstance] = useState(null);
+  const API_BASE_URL =
+    process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
 
   // Fetch data from backend
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:5000/api/realtime-data"
-      );
+      const response = await axios.get(`${API_BASE_URL}/api/realtime-data`);
       const data = response.data.RealTimeLawnMowerData;
       setLawnData(data);
       setLatestMetrics(data[data.length - 1]?.Metrics || {});
     } catch (error) {
       console.error("Error fetching data:", error.message);
+    }
+  }, [API_BASE_URL]);
+
+  // Generate new fake data
+  const generateData = async () => {
+    try {
+      await axios.post(`${API_BASE_URL}/api/generate-fake-data`);
+      alert("Fake data generated successfully!");
+      fetchData(); // Refresh data after generating new data
+    } catch (error) {
+      console.error("Error generating data:", error.message);
+      alert("Failed to generate fake data!");
     }
   };
 
@@ -60,7 +72,7 @@ const Dashboard = () => {
     fetchData();
     const interval = setInterval(fetchData, 10000); // Update every 10 seconds
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchData]); // Include fetchData as a dependency
 
   const chartData = {
     labels: lawnData.map((item) =>
@@ -145,6 +157,18 @@ const Dashboard = () => {
               </Typography>
             </CardContent>
           </Card>
+        </Grid>
+
+        {/* Generate Button */}
+        <Grid item xs={12}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={generateData}
+            sx={{ marginBottom: 2 }}
+          >
+            Generate Data
+          </Button>
         </Grid>
 
         {/* Chart */}
