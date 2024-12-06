@@ -42,7 +42,7 @@ const AdminDashboard = () => {
   const handleDelete = async (userId) => {
     try {
       const token = localStorage.getItem("adminToken");
-      await axios.delete(`http://localhost:5000/api/auth/users/${userId}`, {
+      await axios.delete(`${API_BASE_URL}/api/auth/users/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUsers(users.filter((user) => user._id !== userId)); // Remove the deleted user from the state

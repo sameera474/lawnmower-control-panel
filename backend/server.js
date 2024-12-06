@@ -35,10 +35,18 @@ const app = express();
 const corsOptions = {
   origin: process.env.ALLOWED_ORIGINS
     ? process.env.ALLOWED_ORIGINS.split(",")
-    : "*",
+    : "*", // Allow multiple origins or "*" for all origins
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
+
+app.use(cors(corsOptions)); // Apply the CORS middleware
+
+// const corsOptions = {
+//   origin: ["https://lawnmower-control-panel.vercel.app"], // Allow this domain
+//   methods: ["GET", "POST", "PUT", "DELETE"],
+//   allowedHeaders: ["Content-Type", "Authorization"],
+// };
 app.use(cors(corsOptions));
 
 app.use(express.json());
