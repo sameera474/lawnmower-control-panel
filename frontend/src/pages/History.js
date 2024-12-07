@@ -81,50 +81,72 @@ const History = () => {
           Delete All History
         </Button>
       </Box>
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Timestamp</TableCell>
-              <TableCell>Battery Level</TableCell>
-              <TableCell>Speed</TableCell>
-              <TableCell>Current Power Usage</TableCell>
-              <TableCell>Grass Height</TableCell>
-              <TableCell>Obstacle Detected</TableCell>
-              <TableCell>Error State</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {historyData.map((item) => (
-              <TableRow key={item._id}>
-                <TableCell>
-                  {new Date(item.Timestamp).toLocaleTimeString()}
-                </TableCell>
-                <TableCell>{item.Metrics.BatteryLevel.toFixed(1)}%</TableCell>
-                <TableCell>{item.Metrics.Speed.toFixed(2)} m/s</TableCell>
-                <TableCell>
-                  {item.Metrics.CurrentPowerUsage.toFixed(1)} W
-                </TableCell>
-                <TableCell>{item.Metrics.GrassHeight.toFixed(1)} cm</TableCell>
-                <TableCell>
-                  {item.Metrics.ObstacleDetected ? "Yes" : "No"}
-                </TableCell>
-                <TableCell>{item.Metrics.ErrorState || "None"}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() => deleteRow(item._id)}
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
+      <Box
+        sx={{
+          overflowX: "auto", // Enable horizontal scroll for table
+          width: "100%",
+        }}
+      >
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Timestamp</TableCell>
+                <TableCell>Battery Level</TableCell>
+                <TableCell>Speed</TableCell>
+                <TableCell>Current Power Usage</TableCell>
+                <TableCell>Grass Height</TableCell>
+                <TableCell>Obstacle Detected</TableCell>
+                <TableCell>Error State</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {historyData.map((item) => (
+                <TableRow key={item._id}>
+                  <TableCell
+                    sx={{
+                      whiteSpace: "nowrap", // Prevent wrapping
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {new Date(item.Timestamp).toLocaleTimeString()}
+                  </TableCell>
+                  <TableCell>{item.Metrics.BatteryLevel.toFixed(1)}%</TableCell>
+                  <TableCell>{item.Metrics.Speed.toFixed(2)} m/s</TableCell>
+                  <TableCell>
+                    {item.Metrics.CurrentPowerUsage.toFixed(1)} W
+                  </TableCell>
+                  <TableCell>
+                    {item.Metrics.GrassHeight.toFixed(1)} cm
+                  </TableCell>
+                  <TableCell>
+                    {item.Metrics.ObstacleDetected ? "Yes" : "No"}
+                  </TableCell>
+                  <TableCell>{item.Metrics.ErrorState || "None"}</TableCell>
+                  <TableCell
+                    sx={{
+                      paddingRight: 1, // Reduce padding for better visibility
+                      textAlign: "center",
+                      minWidth: "100px", // Ensure button fits
+                    }}
+                  >
+                    <Button
+                      variant="contained"
+                      color="error"
+                      size="small"
+                      onClick={() => deleteRow(item._id)}
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
     </Box>
   );
 };

@@ -164,54 +164,60 @@ const Dashboard = () => {
       </Button>
       <Grid container spacing={4}>
         <Grid item xs={12}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={generateData}
-            sx={{ marginRight: 2 }}
-            disabled={isCharging}
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 2,
+              justifyContent: { xs: "center", sm: "flex-start" },
+            }}
           >
-            Generate Data
-          </Button>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={() => navigate("/history")}
-            sx={{ marginRight: 2 }}
-            disabled={isCharging}
-          >
-            Go to History
-          </Button>
-          {isGenerating && !isCharging ? (
             <Button
               variant="contained"
-              color="error"
-              onClick={stopGenerating}
+              color="primary"
+              onClick={generateData}
               disabled={isCharging}
             >
-              Stop Machine
+              Generate Data
             </Button>
-          ) : (
-            !isCharging && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => navigate("/history")}
+              disabled={isCharging}
+            >
+              Go to History
+            </Button>
+            {isGenerating && !isCharging ? (
               <Button
                 variant="contained"
-                color="success"
-                onClick={startGenerating}
+                color="error"
+                onClick={stopGenerating}
+                disabled={isCharging}
               >
-                Start Machine
+                Stop Machine
               </Button>
-            )
-          )}
-          {latestMetrics.BatteryLevel < 20 && !isCharging && (
-            <Button
-              variant="contained"
-              color="warning"
-              sx={{ marginLeft: 2 }}
-              onClick={guideToChargingStation}
-            >
-              Go to Charging Station
-            </Button>
-          )}
+            ) : (
+              !isCharging && (
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={startGenerating}
+                >
+                  Start Machine
+                </Button>
+              )
+            )}
+            {latestMetrics.BatteryLevel < 20 && !isCharging && (
+              <Button
+                variant="contained"
+                color="warning"
+                onClick={guideToChargingStation}
+              >
+                Go to Charging Station
+              </Button>
+            )}
+          </Box>
         </Grid>
 
         {/* Battery Level */}
