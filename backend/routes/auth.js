@@ -34,6 +34,14 @@ router.post("/admin-login", async (req, res) => {
 // Sign Up route
 router.post("/signup", async (req, res) => {
   const { name, email, password } = req.body;
+
+  // Simple validation of input data
+  if (!name || !email || !password) {
+    return res
+      .status(400)
+      .json({ message: "Name, email, and password are required" });
+  }
+
   try {
     // Check if the user already exists
     const existingUser = await User.findOne({ email });
@@ -49,7 +57,9 @@ router.post("/signup", async (req, res) => {
 
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Error registering user" });
+    res
+      .status(500)
+      .json({ message: "Error registering user", error: error.message });
   }
 });
 
@@ -78,7 +88,7 @@ router.post("/login", async (req, res) => {
 
     res.status(200).json({ message: "Login successful", token, user });
   } catch (error) {
-    res.status(500).json({ message: "Error logging in" });
+    res.status(500).json({ message: "Error logging in", error: error.message });
   }
 });
 
@@ -117,7 +127,9 @@ router.get("/users", verifyAdmin, async (req, res) => {
     const users = await User.find(); // Fetch all users
     res.status(200).json({ users });
   } catch (error) {
-    res.status(500).json({ message: "Error fetching users", error });
+    res
+      .status(500)
+      .json({ message: "Error fetching users", error: error.message });
   }
 });
 
@@ -127,7 +139,9 @@ router.delete("/users/:id", verifyAdmin, async (req, res) => {
     await User.findByIdAndDelete(id); // Delete user by ID
     res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Error deleting user", error });
+    res
+      .status(500)
+      .json({ message: "Error deleting user", error: error.message });
   }
 });
 

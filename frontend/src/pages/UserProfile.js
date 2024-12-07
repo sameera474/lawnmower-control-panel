@@ -42,8 +42,11 @@ const UserProfile = () => {
         formData
       );
       setMessage(response.data.message);
+      // Handle the successful response (e.g., show a message or navigate)
+      console.log("User registered:", response.data);
     } catch (error) {
       setMessage(error.response?.data?.message || "Signup failed");
+      console.error("Error during signup:", error);
     }
   };
 
