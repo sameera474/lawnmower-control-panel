@@ -120,7 +120,7 @@ const Dashboard = () => {
     };
   }, [fetchData]);
 
-  const chartData = React.useMemo(
+  const batteryChartData = React.useMemo(
     () => ({
       labels: lawnData.map((item) =>
         new Date(item.Timestamp).toLocaleTimeString()
@@ -133,6 +133,17 @@ const Dashboard = () => {
           backgroundColor: "rgba(75,192,192,0.2)",
           fill: true,
         },
+      ],
+    }),
+    [lawnData]
+  );
+
+  const powerUsageChartData = React.useMemo(
+    () => ({
+      labels: lawnData.map((item) =>
+        new Date(item.Timestamp).toLocaleTimeString()
+      ),
+      datasets: [
         {
           label: "Current Power Usage (W)",
           data: lawnData.map((item) => item.Metrics.CurrentPowerUsage),
@@ -327,8 +338,8 @@ const Dashboard = () => {
           </Card>
         </Grid>
 
-        {/* Chart */}
-        <Grid item xs={12}>
+        {/* Battery Level Chart */}
+        <Grid item xs={12} sm={6}>
           <Card
             sx={{
               backgroundColor: isDarkMode ? "#1e1e1e" : "#ffffff",
@@ -336,8 +347,25 @@ const Dashboard = () => {
             }}
           >
             <CardContent>
-              <Typography variant="h6">Performance Metrics</Typography>
-              <Line data={chartData} />
+              <Typography variant="h6">Battery Level Over Time</Typography>
+              <Line data={batteryChartData} />
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Power Usage Chart */}
+        <Grid item xs={12} sm={6}>
+          <Card
+            sx={{
+              backgroundColor: isDarkMode ? "#1e1e1e" : "#ffffff",
+              color: isDarkMode ? "#b0bec5" : "#000000",
+            }}
+          >
+            <CardContent>
+              <Typography variant="h6">
+                Current Power Usage Over Time
+              </Typography>
+              <Line data={powerUsageChartData} />
             </CardContent>
           </Card>
         </Grid>
