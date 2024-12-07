@@ -10,6 +10,8 @@ import {
   Grid,
   Button,
   Snackbar,
+  FormControlLabel,
+  Switch,
 } from "@mui/material";
 import { Line } from "react-chartjs-2";
 import {
@@ -22,6 +24,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import ReactSpeedometer from "react-d3-speedometer";
 import { useNavigate } from "react-router-dom";
 import { useDarkMode } from "../DarkModeContext";
 
@@ -154,14 +157,6 @@ const Dashboard = () => {
       <Typography variant="h4" gutterBottom>
         LawnMower Dashboard
       </Typography>
-      <Button
-        variant="outlined"
-        color="secondary"
-        onClick={toggleDarkMode}
-        sx={{ marginBottom: 2 }}
-      >
-        Toggle Dark Mode
-      </Button>
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Box
@@ -174,6 +169,22 @@ const Dashboard = () => {
               justifyContent: { xs: "center", sm: "flex-start" },
             }}
           >
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={isDarkMode}
+                  onChange={toggleDarkMode}
+                  color="secondary"
+                />
+              }
+              label="Dark Mode"
+              labelPlacement="start"
+              sx={{
+                marginLeft: 0,
+                textAlign: "center",
+                justifyContent: "center",
+              }}
+            />
             <Button
               variant="contained"
               color="primary"
@@ -264,7 +275,7 @@ const Dashboard = () => {
           </Card>
         </Grid>
 
-        {/* Speed */}
+        {/* Speedometer */}
         <Grid item xs={12} sm={6} md={4}>
           <Card
             sx={{
@@ -273,10 +284,28 @@ const Dashboard = () => {
             }}
           >
             <CardContent>
-              <Typography variant="h6">Speed</Typography>
-              <Typography variant="h3" align="center">
-                {latestMetrics.Speed?.toFixed(2) || 0} m/s
+              <Typography variant="h6" gutterBottom>
+                Speed
               </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: 2,
+                }}
+              >
+                <ReactSpeedometer
+                  maxValue={10}
+                  value={latestMetrics.Speed || 0}
+                  needleColor="red"
+                  startColor="green"
+                  endColor="red"
+                  segments={5}
+                  width={200}
+                  height={150}
+                />
+              </Box>
             </CardContent>
           </Card>
         </Grid>
