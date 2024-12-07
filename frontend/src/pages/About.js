@@ -1,10 +1,8 @@
 import React from "react";
 import { Box, Typography, Card, CardContent } from "@mui/material";
-import { useDarkMode } from "../DarkModeContext";
+import backgroundImage from "../images/HomePage.jpg"; // Use the same background image
 
 const About = () => {
-  const { isDarkMode } = useDarkMode();
-
   return (
     <Box
       sx={{
@@ -13,15 +11,17 @@ const About = () => {
         justifyContent: "center",
         minHeight: "100vh",
         padding: "20px",
-        backgroundColor: isDarkMode ? "#121212" : "#f0f2f5",
-        color: isDarkMode ? "#b0bec5" : "#333",
+        backgroundImage: `url(${backgroundImage})`, // Background image
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        color: "#333", // Fixed text color
       }}
     >
       <Card
         sx={{
           maxWidth: 700,
-          backgroundColor: isDarkMode ? "#1e1e1e" : "#ffffff",
-          color: isDarkMode ? "#b0bec5" : "#000000",
+          backgroundColor: "rgba(255, 255, 255, 0.9)", // Semi-transparent background for readability
+          color: "#000000",
           padding: "30px",
           borderRadius: "10px",
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
@@ -32,8 +32,9 @@ const About = () => {
             variant="h4"
             gutterBottom
             sx={{
-              color: isDarkMode ? "#90caf9" : "#007bff",
+              color: "#007bff", // Title color
               marginBottom: "15px",
+              textAlign: "center",
             }}
           >
             About Sahka
