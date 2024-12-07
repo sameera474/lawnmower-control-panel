@@ -35,22 +35,52 @@ const Navbar = () => {
 
         {/* For larger screens */}
         <Box sx={{ display: { xs: "none", md: "block" } }}>
-          <Button color="inherit" component={Link} to="/">
+          <Button
+            color="inherit"
+            component={Link}
+            to="/"
+            sx={{ textTransform: "uppercase" }}
+          >
             Home
           </Button>
-          <Button color="inherit" component={Link} to="/about">
+          <Button
+            color="inherit"
+            component={Link}
+            to="/about"
+            sx={{ textTransform: "uppercase" }}
+          >
             About
           </Button>
-          <Button color="inherit" component={Link} to="/settings">
+          <Button
+            color="inherit"
+            component={Link}
+            to="/settings"
+            sx={{ textTransform: "uppercase" }}
+          >
             Settings
           </Button>
-          <Button color="inherit" component={Link} to="/dashboard">
+          <Button
+            color="inherit"
+            component={Link}
+            to="/dashboard"
+            sx={{ textTransform: "uppercase" }}
+          >
             Dashboard
           </Button>
-          <Button color="inherit" component={Link} to="/user-profile">
+          <Button
+            color="inherit"
+            component={Link}
+            to="/user-profile"
+            sx={{ textTransform: "uppercase" }}
+          >
             User Profile
           </Button>
-          <Button color="inherit" component={Link} to="/history">
+          <Button
+            color="inherit"
+            component={Link}
+            to="/history"
+            sx={{ textTransform: "uppercase" }}
+          >
             History
           </Button>
         </Box>
@@ -69,33 +99,113 @@ const Navbar = () => {
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
+            PaperProps={{
+              sx: {
+                width: "100%", // Make the dropdown full width
+                left: 0, // Align it to the left edge of the screen
+                top: "64px", // Position it just below the AppBar
+              },
+            }}
           >
-            <MenuItem component={Link} to="/" onClick={handleMenuClose}>
-              Home
-            </MenuItem>
-            <MenuItem component={Link} to="/about" onClick={handleMenuClose}>
-              About
-            </MenuItem>
-            <MenuItem component={Link} to="/settings" onClick={handleMenuClose}>
-              Settings
-            </MenuItem>
-            <MenuItem
-              component={Link}
-              to="/dashboard"
-              onClick={handleMenuClose}
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                textAlign: "center",
+              }}
             >
-              Dashboard
-            </MenuItem>
-            <MenuItem
-              component={Link}
-              to="/user-profile"
-              onClick={handleMenuClose}
-            >
-              User Profile
-            </MenuItem>
-            <MenuItem component={Link} to="/history" onClick={handleMenuClose}>
-              History
-            </MenuItem>
+              <MenuItem
+                component={Link}
+                to="/"
+                onClick={handleMenuClose}
+                sx={{
+                  textTransform: "uppercase",
+                  justifyContent: "center",
+                  width: "100%", // Full width
+                  "&:hover": {
+                    backgroundColor: "rgba(0, 0, 0, 0.1)", // Add hover effect
+                  },
+                }}
+              >
+                Home
+              </MenuItem>
+              <MenuItem
+                component={Link}
+                to="/about"
+                onClick={handleMenuClose}
+                sx={{
+                  textTransform: "uppercase",
+                  justifyContent: "center",
+                  width: "100%", // Full width
+                  "&:hover": {
+                    backgroundColor: "rgba(0, 0, 0, 0.1)", // Add hover effect
+                  },
+                }}
+              >
+                About
+              </MenuItem>
+              <MenuItem
+                component={Link}
+                to="/settings"
+                onClick={handleMenuClose}
+                sx={{
+                  textTransform: "uppercase",
+                  justifyContent: "center",
+                  width: "100%", // Full width
+                  "&:hover": {
+                    backgroundColor: "rgba(0, 0, 0, 0.1)", // Add hover effect
+                  },
+                }}
+              >
+                Settings
+              </MenuItem>
+              <MenuItem
+                component={Link}
+                to="/dashboard"
+                onClick={handleMenuClose}
+                sx={{
+                  textTransform: "uppercase",
+                  justifyContent: "center",
+                  width: "100%", // Full width
+                  "&:hover": {
+                    backgroundColor: "rgba(0, 0, 0, 0.1)", // Add hover effect
+                  },
+                }}
+              >
+                Dashboard
+              </MenuItem>
+              <MenuItem
+                component={Link}
+                to="/user-profile"
+                onClick={handleMenuClose}
+                sx={{
+                  textTransform: "uppercase",
+                  justifyContent: "center",
+                  width: "100%", // Full width
+                  "&:hover": {
+                    backgroundColor: "rgba(0, 0, 0, 0.1)", // Add hover effect
+                  },
+                }}
+              >
+                User Profile
+              </MenuItem>
+              <MenuItem
+                component={Link}
+                to="/history"
+                onClick={handleMenuClose}
+                sx={{
+                  textTransform: "uppercase",
+                  justifyContent: "center",
+                  width: "100%", // Full width
+                  "&:hover": {
+                    backgroundColor: "rgba(0, 0, 0, 0.1)", // Add hover effect
+                  },
+                }}
+              >
+                History
+              </MenuItem>
+            </Box>
           </Menu>
         </Box>
       </Toolbar>

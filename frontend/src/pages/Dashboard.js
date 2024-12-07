@@ -169,6 +169,8 @@ const Dashboard = () => {
               display: "flex",
               flexWrap: "wrap",
               gap: 2,
+              flexDirection: { xs: "column", sm: "row" }, // Responsive alignment
+              alignItems: { xs: "center", sm: "flex-start" },
               justifyContent: { xs: "center", sm: "flex-start" },
             }}
           >
